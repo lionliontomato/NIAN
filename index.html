@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#eaf4f9">
+  <meta name="description" content="年年の歌單｜搜尋歌名、歌手、分類，隨機抽歌與複製歌曲。">
+  <!-- GitHub Pages 的 HTTP 快取由 GitHub 控制；下面的版本參數保證新版資源更新，資料另外做即時防快取。 -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>年年の歌單</title>
+  <link rel="icon" type="image/svg+xml" href="./assets/fish-icon.svg?v=20261029-nian3">
+  <link rel="icon" type="image/png" sizes="192x192" href="./assets/favicon-192.png?v=20261029-nian3">
+  <link rel="apple-touch-icon" href="./assets/apple-touch-icon.png?v=20261029-nian3">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css?v=20261029-nian3">
+  <script defer src="./script.js?v=20261029-nian3"></script>
+</head>
+<body>
+  <div class="float-layer" id="floatLayer" aria-hidden="true"></div>
+  <main class="wrap">
+    <section class="hero" aria-label="年年歌單搜尋與篩選">
+      <span class="eyebrow"><img src="./assets/fish-icon.svg?v=20261029-nian3" alt="年年の歌單小魚圖示" width="36" height="36"></span>
+      <h1 id="siteTitle">年年の歌單</h1>
+      <p id="siteSubtitle">他很壞嘟嘟嘟</p>
+      <div class="controls">
+        <label class="sr-only" for="search">搜尋歌名、歌手或分類</label>
+        <input class="search" id="search" type="search" autocomplete="off" placeholder="搜尋歌名、歌手或分類…">
+        <button class="random" id="randomBtn" type="button" disabled>🎲 隨機抽歌</button>
+      </div>
+      <div class="tags" id="tags" aria-label="分類篩選"></div>
+      <div class="meta">
+        <span id="count" aria-live="polite">讀取最新歌單中…</span>
+      </div>
+    </section>
+    <section class="grid" id="grid" aria-label="歌曲列表" aria-busy="true"></section>
+    <div class="empty" id="empty" role="status">沒有找到符合條件的歌曲</div>
+  </main>
+  <footer class="site-footer">
+    <p>© 2026 LionLionTomato. All Rights Reserved.</p>
+    <p>本網站「年年の歌單」內容、版面設計與程式架構未經授權不得重製、改作或商業使用。</p>
+    <p><a href="./copyright.html">著作權聲明與使用條款</a></p>
+  </footer>
+  <div class="modal" id="modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-card">
+      <img class="modal-fish" src="./assets/fish-icon.svg?v=20261029-nian3" alt="" width="56" height="56">
+      <h2 id="modalTitle">🐟年年推薦</h2>
+      <div class="big" id="pickSong"></div>
+      <div id="pickArtist"></div>
+      <button class="close" id="closeModal" type="button">就這個了!</button>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title">
+  <title id="title">年年の歌單 藍色小魚</title>
+  <defs>
+    <linearGradient id="fin" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#d6f4f4"/><stop offset=".55" stop-color="#92bbdd"/><stop offset="1" stop-color="#6c91cd"/>
+    </linearGradient>
+    <linearGradient id="body" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#c9eced"/><stop offset=".52" stop-color="#86b8dc"/><stop offset="1" stop-color="#83a1d2"/>
+    </linearGradient>
+  </defs>
+  <path d="M42 48C26 39 13 23 7 22c-1 18 8 32 21 43C16 78 12 91 10 109c19-5 33-16 43-31" fill="url(#fin)" stroke="#567fa1" stroke-width="3.2" stroke-linejoin="round"/>
+  <path d="M51 48C47 34 50 22 56 13c8 8 13 19 14 29M49 75c-6 10-6 21-1 34 13-5 22-14 28-27" fill="#a9d2e8" stroke="#567fa1" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M48 45c18-12 43-13 60 0 8 7 14 16 15 21-7 13-18 21-34 25-18 4-36-2-48-18-7-11-4-20 7-28z" fill="url(#body)" stroke="#567fa1" stroke-width="3.2" stroke-linejoin="round"/>
+  <path d="M52 58c12-7 25-11 39-10M55 73c11 7 21 10 34 10" fill="none" stroke="#e7f7fa" stroke-width="2.6" stroke-linecap="round" opacity=".8"/>
+  <circle cx="106" cy="57" r="3.5" fill="#345e7e"/><circle cx="107" cy="56" r="1" fill="#fff"/>
+  <path d="M117 72l7 2-7 3" fill="none" stroke="#567fa1" stroke-width="2.3" stroke-linecap="round"/>
+  <path d="M12 10l3 8 8 3-8 3-3 8-3-8-8-3 8-3z" fill="#fff9df" stroke="#6c92b6" stroke-width="1.5"/>
+</svg>

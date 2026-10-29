@@ -6,11 +6,14 @@
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
+/* 最新標題尚未從 Google 試算表確認前先隱藏，避免預設舊標題閃現。 */
+.settings-pending #siteTitle,
+.settings-pending #siteSubtitle{visibility:hidden}
 body{
   margin:0;min-height:100vh;color:var(--ink);
   font-family:'Zen Maru Gothic','Noto Serif TC',system-ui,sans-serif;
   overflow-x:hidden;background-color:#eaf4f9;
-  background-image:linear-gradient(rgba(255,255,255,.12),rgba(255,255,255,.25)),url('./assets/nian-bg-desktop.webp?v=20261029-nian3');
+  background-image:linear-gradient(rgba(255,255,255,.12),rgba(255,255,255,.25)),url('./assets/nian-bg-desktop.webp?v=20261030-nian4');
   background-size:cover;background-position:center center;background-repeat:no-repeat;background-attachment:fixed;
 }
 .float-layer{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
@@ -140,7 +143,7 @@ body{
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
 @media(max-width:768px){
   body{
-    background-image:linear-gradient(rgba(255,255,255,.17),rgba(255,255,255,.28)),url('./assets/nian-bg-mobile.webp?v=20261029-nian3');
+    background-image:linear-gradient(rgba(255,255,255,.17),rgba(255,255,255,.28)),url('./assets/nian-bg-mobile.webp?v=20261030-nian4');
     background-size:100% auto;background-position:center bottom;background-attachment:scroll;background-repeat:no-repeat;
   }
   .float{font-size:clamp(16px,5vw,26px);opacity:.20}

@@ -11,7 +11,7 @@ const SHEET_ID = '1nFJG7gG6iJQq9a9LQbHuC78lnSjyV7pOR_nrWXk80jE';
 const SHEET_GID = '0';
 const RECHECK_MS = 45_000;
 const SHEET_TIMEOUT_MS = 15_000;
-const FISH_ICON_URL = './assets/fish-icon.svg?v=20261029-nian3';
+const FISH_ICON_URL = './assets/fish-icon.svg?v=20261030-nian4';
 const palette = [
   ['#6f8795','#edf3f5'],['#7f9aaa','#eef5f4'],['#8da0b6','#f0f3f8'],
   ['#78918b','#eef4f1'],['#a18f99','#f6f1f4'],['#9b947e','#f5f2ea'],
@@ -73,11 +73,13 @@ function settingsFromRows(rows) {
 }
 
 function applySettings(settings) {
+  // 先更新所有標題，再解除隱藏，避免預設舊標題閃現。
   el('siteTitle').textContent = settings.title;
   el('siteSubtitle').textContent = settings.subtitle;
   el('modalTitle').textContent = settings.modalTitle;
   el('closeModal').textContent = settings.closeText;
   document.title = settings.title;
+  document.body.classList.remove('settings-pending');
 }
 
 function parseSheet(response) {
@@ -158,6 +160,13 @@ function loadSheet(options = {}) {
     songs = [];tags = [];activeTag = null;loadedAt = 0;lastRenderedFingerprint = '';
     el('randomBtn').disabled = true;
     el('count').textContent = '目前無法確認最新歌單';
+    if (initial) {
+      // 首次載入失敗時顯示明確提示，不把 HTML 的預設文字當成最新標題。
+      el('siteTitle').textContent = '暫時無法取得最新標題';
+      el('siteSubtitle').textContent = '請稍後重新整理再試一次';
+      document.title = '年年の歌單｜載入失敗';
+      document.body.classList.remove('settings-pending');
+    }
     el('grid').replaceChildren();
     el('grid').setAttribute('aria-busy','false');
     el('tags').replaceChildren();

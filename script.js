@@ -3,17 +3,21 @@
 
 /**
  * 年年の歌單｜Google 試算表即時連動
- * A：歌名、B：歌手、C：分類、D：字數（不是連結）、F：篩選標籤
+ * A：歌名、B：歌手、C：分類
+ * D：字數、F：篩選標籤
  * H：設定名稱、I：設定值
- * 不使用 localStorage / sessionStorage / IndexedDB / Service Worker 留存歌單。
- * 每次讀取 Google Sheets 都帶上唯一參數以避開瀏覽器 / CDN 的舊資料快取。
+ *
+ * 不使用瀏覽器本機儲存歌單。
+ * 每次讀取 Google Sheets 都加入唯一參數。
  */
 
 const SHEET_ID = '1nFJG7gG6iJQq9a9LQbHuC78lnSjyV7pOR_nrWXk80jE';
 const SHEET_GID = '0';
 const RECHECK_MS = 45_000;
 const SHEET_TIMEOUT_MS = 15_000;
-const FISH_ICON_URL = './assets/fish-icon.svg?v=20261030-nian4';
+
+const FISH_ICON_URL =
+  './assets/fish-icon.svg?v=20261030-nian4';
 
 const palette = [
   ['#6f8795','#edf3f5'],
@@ -42,7 +46,7 @@ let requestSerial = 0;
 let activeRequest = null;
 let lastRenderedFingerprint = '';
 
-// 新增：記錄隨機抽到的歌曲
+// 記錄隨機抽到的歌曲
 let currentPickedSong = null;
 
 const el = (id) => document.getElementById(id);
@@ -53,9 +57,15 @@ const clean = (value) =>
     .trim();
 
 function cell(row, index) {
-  const c = row && Array.isArray(row.c) ? row.c[index] : null;
+  const c = row && Array.isArray(row.c)
+    ? row.c[index]
+    : null;
+
   if (!c) return '';
-  return clean(c.f !== undefined && c.f !== null ? c.f : c.v);
+
+  return clean(
+    c.f !== undefined && c.f !== null ? c.f : c.v
+  );
 }
 
 function parseTags(value) {
@@ -63,11 +73,14 @@ function parseTags(value) {
     .replace(/[｜|／\/;；、，\n\r]/g, ',')
     .split(',')
     .map(clean)
-    .filter((tag) => tag && !['-', '—', '標籤'].includes(tag));
+    .filter(
+      (tag) => tag && !['-', '—', '標籤'].includes(tag)
+    );
 }
 
 function settingsFromRows(rows) {
   const settings = {};
+
   const allowed = [
     '網站標題',
     '網站小標題',
@@ -76,13 +89,16 @@ function settingsFromRows(rows) {
   ];
 
   for (const row of rows) {
-    for (
-      let i = 0;
-      i < Math.max(9, row && row.c ? row.c.length : 0) - 1;
-      i++
-    ) {
+    const length = Math.max(
+      9,
+      row && row.c ? row.c.length : 0
+    );
+
+    for (let i = 0; i < length - 1; i++) {
       const originalKey = cell(row, i);
-      const normalizedKey = originalKey.replace(/[：:\s]/g, '');
+      const normalizedKey =
+        originalKey.replace(/[：:\s]/g, '');
+
       const next = cell(row, i + 1);
 
       for (const k of allowed) {
@@ -116,6 +132,7 @@ function applySettings(settings) {
   el('closeModal').textContent = settings.closeText;
 
   document.title = settings.title;
+
   document.body.classList.remove('settings-pending');
 }
 
@@ -126,7 +143,9 @@ function parseSheet(response) {
     !response.table ||
     !Array.isArray(response.table.rows)
   ) {
-    throw new Error('試算表沒有提供可讀取的資料，請確認共用權限。');
+    throw new Error(
+      '試算表沒有提供可讀取的資料，請確認共用權限。'
+    );
   }
 
   const rows = response.table.rows;
@@ -151,7 +170,7 @@ function parseSheet(response) {
 
     if (title && !looksLikeHeader) {
       nextSongs.push({
-        title,
+        title: title,
         artist: artist || '未填歌手',
         category: category || '未分類',
         link: /^https?:\/\//i.test(colD) ? colD : ''
@@ -159,14 +178,16 @@ function parseSheet(response) {
     }
   }
 
-  const inferred = nextSongs.flatMap((song) =>
-    parseTags(song.category)
+  const inferred = nextSongs.flatMap(
+    (song) => parseTags(song.category)
   );
 
   return {
-    nextSongs,
+    nextSongs: nextSongs,
     nextTags: Array.from(
-      new Set(masterTags.length ? masterTags : inferred)
+      new Set(
+        masterTags.length ? masterTags : inferred
+      )
     ),
     settings: settingsFromRows(rows)
   };
@@ -212,6 +233,7 @@ function loadSheet(options = {}) {
   discardActiveRequest();
 
   const serial = ++requestSerial;
+
   const callbackName =
     `nianSheetCallback_${serial}_${Date.now()}`;
 
@@ -221,7 +243,8 @@ function loadSheet(options = {}) {
     gid: SHEET_GID,
     headers: '0',
     tqx: `out:json;responseHandler:${callbackName}`,
-    _fresh: `${Date.now()}_${serial}_${Math.random().toString(36).slice(2)}`
+    _fresh:
+      `${Date.now()}_${serial}_${Math.random().toString(36).slice(2)}`
   });
 
   script.src =
@@ -238,7 +261,8 @@ function loadSheet(options = {}) {
   }
 
   const isCurrent = () =>
-    activeRequest && activeRequest.serial === serial;
+    activeRequest &&
+    activeRequest.serial === serial;
 
   const fail = (message) => {
     if (!isCurrent()) return;
@@ -255,16 +279,26 @@ function loadSheet(options = {}) {
     el('count').textContent = '目前無法確認最新歌單';
 
     if (initial) {
-      el('siteTitle').textContent = '暫時無法取得最新標題';
+      el('siteTitle').textContent =
+        '暫時無法取得最新標題';
+
       el('siteSubtitle').textContent =
         '請稍後重新整理再試一次';
 
       document.title = '年年の歌單｜載入失敗';
-      document.body.classList.remove('settings-pending');
+
+      document.body.classList.remove(
+        'settings-pending'
+      );
     }
 
     el('grid').replaceChildren();
-    el('grid').setAttribute('aria-busy', 'false');
+
+    el('grid').setAttribute(
+      'aria-busy',
+      'false'
+    );
+
     el('tags').replaceChildren();
 
     el('empty').textContent =
@@ -281,7 +315,10 @@ function loadSheet(options = {}) {
     try {
       parsed = parseSheet(response);
     } catch (error) {
-      console.error('年年歌單讀取失敗：', error);
+      console.error(
+        '年年歌單讀取失敗：',
+        error
+      );
 
       fail('試算表讀取失敗，請檢查分享權限');
       return;
@@ -309,18 +346,25 @@ function loadSheet(options = {}) {
 
     if (fingerprint !== lastRenderedFingerprint) {
       lastRenderedFingerprint = fingerprint;
+
       renderTags();
       renderSongs();
     } else {
       updateCount();
     }
 
-    el('empty').textContent = '沒有找到符合條件的歌曲';
+    el('empty').textContent =
+      '沒有找到符合條件的歌曲';
 
     loadedAt = Date.now();
 
-    el('randomBtn').disabled = songs.length === 0;
-    el('grid').setAttribute('aria-busy', 'false');
+    el('randomBtn').disabled =
+      songs.length === 0;
+
+    el('grid').setAttribute(
+      'aria-busy',
+      'false'
+    );
   };
 
   script.onerror = () =>
@@ -352,13 +396,21 @@ function renderTags() {
     const button = document.createElement('button');
 
     button.type = 'button';
+
     button.className =
       'tag' + (activeTag === tag ? ' active' : '');
 
     button.textContent = tag;
 
-    button.style.setProperty('--tag', colors[0]);
-    button.style.setProperty('--tagLight', colors[1]);
+    button.style.setProperty(
+      '--tag',
+      colors[0]
+    );
+
+    button.style.setProperty(
+      '--tagLight',
+      colors[1]
+    );
 
     button.setAttribute(
       'aria-pressed',
@@ -366,7 +418,8 @@ function renderTags() {
     );
 
     button.addEventListener('click', () => {
-      activeTag = activeTag === tag ? null : tag;
+      activeTag =
+        activeTag === tag ? null : tag;
 
       renderTags();
       renderSongs();
@@ -382,7 +435,8 @@ function matchSong(song) {
       .toLocaleLowerCase();
 
   const matchesSearch =
-    !query || text.includes(query.toLocaleLowerCase());
+    !query ||
+    text.includes(query.toLocaleLowerCase());
 
   const cats = parseTags(song.category);
 
@@ -407,15 +461,20 @@ function updateCount() {
 
 /**
  * 共用複製功能
- * 下方歌曲卡片、隨機抽歌結果都使用這個函式。
+ * 歌曲卡片與隨機抽歌使用相同格式。
  */
 function copySongText(text, button) {
   if (!button || !text) return;
 
-  const originalText =
-    button.dataset.originalText || button.textContent;
+  const original =
+    button.dataset.originalText ||
+    button.textContent;
 
-  button.dataset.originalText = originalText;
+  button.dataset.originalText = original;
+
+  if (button.copyResetTimer) {
+    clearTimeout(button.copyResetTimer);
+  }
 
   async function copy() {
     try {
@@ -423,25 +482,26 @@ function copySongText(text, button) {
         !navigator.clipboard ||
         !navigator.clipboard.writeText
       ) {
-        throw new Error('clipboard unavailable');
+        throw new Error(
+          'clipboard unavailable'
+        );
       }
 
       await navigator.clipboard.writeText(text);
     } catch (_) {
-      const temp = document.createElement('textarea');
+      const temp =
+        document.createElement('textarea');
 
       temp.value = text;
-      temp.setAttribute('readonly', '');
-
       temp.style.position = 'fixed';
       temp.style.left = '-9999px';
-      temp.style.top = '0';
 
       document.body.appendChild(temp);
-      temp.focus();
+
       temp.select();
 
-      const succeeded = document.execCommand('copy');
+      const succeeded =
+        document.execCommand('copy');
 
       temp.remove();
 
@@ -451,30 +511,27 @@ function copySongText(text, button) {
     }
   }
 
-  // 避免連續按複製時，舊計時器提前恢復文字
-  if (button.copyResetTimer) {
-    clearTimeout(button.copyResetTimer);
-  }
-
   copy()
     .then(() => {
       button.textContent = '✓ 已複製';
+
       button.classList.add('done');
 
       button.copyResetTimer = setTimeout(() => {
         if (button.isConnected) {
-          button.textContent = originalText;
+          button.textContent = original;
           button.classList.remove('done');
         }
       }, 1300);
     })
     .catch(() => {
       button.textContent = '複製失敗';
+
       button.classList.remove('done');
 
       button.copyResetTimer = setTimeout(() => {
         if (button.isConnected) {
-          button.textContent = originalText;
+          button.textContent = original;
         }
       }, 1600);
     });
@@ -482,33 +539,54 @@ function copySongText(text, button) {
 
 function renderSongs() {
   const grid = el('grid');
+
   const visible = songs.filter(matchSong);
-  const fragment = document.createDocumentFragment();
+
+  const fragment =
+    document.createDocumentFragment();
 
   visible.forEach((song) => {
-    const card = document.createElement('article');
+    const card =
+      document.createElement('article');
+
     card.className = 'card';
 
-    const decor = document.createElement('img');
+    const decor =
+      document.createElement('img');
+
     decor.className = 'decor-fish';
     decor.src = FISH_ICON_URL;
     decor.alt = '';
-    decor.setAttribute('aria-hidden', 'true');
 
-    const title = document.createElement('h3');
+    decor.setAttribute(
+      'aria-hidden',
+      'true'
+    );
+
+    const title =
+      document.createElement('h3');
+
     title.className = 'song';
     title.textContent = song.title;
 
-    const artist = document.createElement('div');
+    const artist =
+      document.createElement('div');
+
     artist.className = 'artist';
     artist.textContent = song.artist;
 
-    const cat = document.createElement('span');
-    cat.className = 'cat';
-    cat.textContent =
-      parseTags(song.category).join(' ') || '未分類';
+    const cat =
+      document.createElement('span');
 
-    const copy = document.createElement('button');
+    cat.className = 'cat';
+
+    cat.textContent =
+      parseTags(song.category).join(' ') ||
+      '未分類';
+
+    const copy =
+      document.createElement('button');
+
     copy.className = 'copy';
     copy.type = 'button';
     copy.textContent = '複製';
@@ -525,7 +603,13 @@ function renderSongs() {
       );
     });
 
-    card.append(decor, title, artist, cat, copy);
+    card.append(
+      decor,
+      title,
+      artist,
+      cat,
+      copy
+    );
 
     if (song.link) {
       card.title = '雙擊開啟歌曲連結';
@@ -549,17 +633,17 @@ function renderSongs() {
 
 /**
  * 隨機抽歌
- * 新增：保存抽到的歌曲，供複製按鈕使用。
  */
 function openModal() {
   const filtered = songs.filter(matchSong);
 
   if (!filtered.length) return;
 
-  const picked =
-    filtered[Math.floor(Math.random() * filtered.length)];
+  const picked = filtered[
+    Math.floor(Math.random() * filtered.length)
+  ];
 
-  // 記錄這次抽到的歌曲
+  // 儲存抽到的歌曲
   currentPickedSong = picked;
 
   el('pickSong').textContent = picked.title;
@@ -567,7 +651,7 @@ function openModal() {
   el('pickArtist').textContent =
     `${picked.artist}｜${parseTags(picked.category).join(' ') || '未分類'}`;
 
-  // 每次重新抽歌，重設複製按鈕狀態
+  // 重設抽歌複製按鈕
   const copyButton = el('copyPickBtn');
 
   if (copyButton) {
@@ -575,7 +659,9 @@ function openModal() {
       clearTimeout(copyButton.copyResetTimer);
     }
 
-    copyButton.textContent = '📋 複製歌曲名稱與歌手';
+    copyButton.textContent =
+      '📋 複製歌曲名稱與歌手';
+
     copyButton.dataset.originalText =
       '📋 複製歌曲名稱與歌手';
 
@@ -588,15 +674,18 @@ function openModal() {
   }
 
   el('modal').classList.add('show');
-  el('modal').setAttribute('aria-hidden', 'false');
+
+  el('modal').setAttribute(
+    'aria-hidden',
+    'false'
+  );
 
   el('closeModal').focus();
 }
 
 /**
- * 新增：複製隨機抽歌結果
- * 格式和下方卡片一模一樣：
- * 歌名 - 歌手
+ * 複製隨機抽歌結果
+ * 格式：歌名 - 歌手
  */
 function copyPickedSong() {
   if (!currentPickedSong) return;
@@ -613,20 +702,34 @@ function copyPickedSong() {
 
 function closeModal() {
   el('modal').classList.remove('show');
-  el('modal').setAttribute('aria-hidden', 'true');
+
+  el('modal').setAttribute(
+    'aria-hidden',
+    'true'
+  );
 
   el('randomBtn').focus();
 }
 
 function initFloats() {
-  const symbols = ['♪', '♫', '✦', '♬', '✧'];
+  const symbols = [
+    '♪',
+    '♫',
+    '✦',
+    '♬',
+    '✧'
+  ];
+
   const layer = el('floatLayer');
 
   for (let i = 0; i < 22; i++) {
-    const symbol = document.createElement('span');
+    const symbol =
+      document.createElement('span');
 
     symbol.className = 'float';
-    symbol.textContent = symbols[i % symbols.length];
+
+    symbol.textContent =
+      symbols[i % symbols.length];
 
     symbol.style.setProperty(
       '--left',
@@ -650,45 +753,57 @@ function initFloats() {
 function clearLegacyCaches() {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.getRegistrations()
-      .then((regs) =>
+      .then((regs) => {
+        const scopePath = location.pathname.replace(
+          /[^/]*$/,
+          ''
+        );
+
         regs
           .filter((reg) =>
-            reg.scope.includes(
-              location.pathname.replace(/[^/]*$/, '')
-            )
+            reg.scope.includes(scopePath)
           )
-          .forEach((reg) => reg.unregister())
-      )
+          .forEach((reg) =>
+            reg.unregister()
+          );
+      })
       .catch(() => {});
   }
 
   if ('caches' in window) {
     caches.keys()
-      .then((keys) =>
-        Promise.all(
-          keys
-            .filter((key) =>
-              /^(fang-fang|nian-nian|playlist)-/i.test(key)
-            )
-            .map((key) => caches.delete(key))
-        )
-      )
+      .then((keys) => {
+        const oldKeys = keys.filter(
+          (key) =>
+            /^(fang-fang|nian-nian|playlist)-/i.test(key)
+        );
+
+        return Promise.all(
+          oldKeys.map(
+            (key) => caches.delete(key)
+          )
+        );
+      })
       .catch(() => {});
   }
 }
 
 function boot() {
-  el('search').addEventListener('input', (event) => {
-    query = event.target.value.trim();
-    renderSongs();
-  });
+  el('search').addEventListener(
+    'input',
+    (event) => {
+      query = event.target.value.trim();
+
+      renderSongs();
+    }
+  );
 
   el('randomBtn').addEventListener(
     'click',
     openModal
   );
 
-  // 新增：隨機抽歌視窗的複製按鈕
+  // 新增：隨機抽歌複製按鈕
   const copyPickButton = el('copyPickBtn');
 
   if (copyPickButton) {
@@ -703,41 +818,56 @@ function boot() {
     closeModal
   );
 
-  el('modal').addEventListener('click', (event) => {
-    if (event.target === el('modal')) {
-      closeModal();
+  el('modal').addEventListener(
+    'click',
+    (event) => {
+      if (event.target === el('modal')) {
+        closeModal();
+      }
     }
-  });
+  );
 
-  document.addEventListener('keydown', (event) => {
-    if (
-      event.key === 'Escape' &&
-      el('modal').classList.contains('show')
-    ) {
-      closeModal();
+  document.addEventListener(
+    'keydown',
+    (event) => {
+      if (
+        event.key === 'Escape' &&
+        el('modal').classList.contains('show')
+      ) {
+        closeModal();
+      }
     }
-  });
+  );
 
-  document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'visible') {
-      loadSheet({ force: true });
+  document.addEventListener(
+    'visibilitychange',
+    () => {
+      if (document.visibilityState === 'visible') {
+        loadSheet({ force: true });
+      }
     }
-  });
+  );
 
-  window.addEventListener('pageshow', (event) => {
-    if (event.persisted) {
-      loadSheet({ force: true });
+  window.addEventListener(
+    'pageshow',
+    (event) => {
+      if (event.persisted) {
+        loadSheet({ force: true });
+      }
     }
-  });
+  );
 
-  window.addEventListener('focus', () => {
-    if (
-      loadedAt &&
-      Date.now() - loadedAt > 15_000
-    ) {
-      loadSheet({ force: true });
+  window.addEventListener(
+    'focus',
+    () => {
+      if (
+        loadedAt &&
+        Date.now() - loadedAt > 15_000
+      ) {
+        loadSheet({ force: true });
+      }
     }
-  });
+  );
 
   setInterval(() => {
     if (document.visibilityState === 'visible') {

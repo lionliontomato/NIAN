@@ -7,7 +7,7 @@
   <meta name="theme-color" content="#eaf4f9">
   <meta name="description" content="年年の歌單｜搜尋歌名、歌手、分類，隨機抽歌與複製歌曲。">
 
-  <!-- GitHub Pages 的實際快取標頭由平台控制 -->
+  <!-- GitHub Pages 快取標頭由平台控制 -->
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
@@ -22,25 +22,34 @@
   <!-- Google 字型 -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
 
-  <!-- 網站樣式：更新版本 -->
-  <link rel="stylesheet" href="./style.css?v=20261101-nian5">
+  <!-- 網站樣式 -->
+  <link rel="stylesheet" href="./style.css?v=20261101-nian6">
 
-  <!-- 網站功能：更新版本 -->
-  <script defer src="./script.js?v=20261101-nian5"></script>
+  <!-- 網站功能 -->
+  <script defer src="./script.js?v=20261101-nian6"></script>
 </head>
 
 <body class="settings-pending">
 
   <!-- 背景漂浮音符 -->
-  <div class="float-layer" id="floatLayer" aria-hidden="true"></div>
+  <div
+    class="float-layer"
+    id="floatLayer"
+    aria-hidden="true"
+  ></div>
 
   <main class="wrap">
 
     <!-- 搜尋與篩選區域 -->
-    <section class="hero" aria-label="年年歌單搜尋與篩選">
+    <section
+      class="hero"
+      aria-label="年年歌單搜尋與篩選"
+    >
 
+      <!-- 小魚圖示 -->
       <span class="eyebrow">
         <img
           src="./assets/fish-icon.svg?v=20261030-nian4"
@@ -50,14 +59,19 @@
         >
       </span>
 
+      <!-- 網站標題 -->
       <h1 id="siteTitle">年年の歌單</h1>
 
+      <!-- 網站小標題 -->
       <p id="siteSubtitle">正在讀取最新標題…</p>
 
       <!-- 搜尋與隨機抽歌 -->
       <div class="controls">
 
-        <label class="sr-only" for="search">
+        <label
+          class="sr-only"
+          for="search"
+        >
           搜尋歌名、歌手或分類
         </label>
 
@@ -80,7 +94,7 @@
 
       </div>
 
-      <!-- 分類標籤 -->
+      <!-- 分類篩選標籤 -->
       <div
         class="tags"
         id="tags"
@@ -89,14 +103,17 @@
 
       <!-- 歌曲數量 -->
       <div class="meta">
-        <span id="count" aria-live="polite">
+        <span
+          id="count"
+          aria-live="polite"
+        >
           讀取最新歌單中…
         </span>
       </div>
 
     </section>
 
-    <!-- 歌曲卡片列表 -->
+    <!-- 歌曲列表 -->
     <section
       class="grid"
       id="grid"
@@ -156,9 +173,7 @@
       >
 
       <!-- 抽歌視窗標題 -->
-      <h2 id="modalTitle">
-        🐟年年推薦
-      </h2>
+      <h2 id="modalTitle">🐟年年推薦</h2>
 
       <!-- 抽中的歌曲名稱 -->
       <div
@@ -169,7 +184,7 @@
       <!-- 抽中的歌手與分類 -->
       <div id="pickArtist"></div>
 
-      <!-- 新增：複製抽中的歌曲名稱與歌手 -->
+      <!-- 新增：複製歌曲名稱與歌手 -->
       <button
         id="copyPickBtn"
         type="button"
@@ -178,7 +193,7 @@
         📋 複製歌曲名稱與歌手
       </button>
 
-      <!-- 原本的關閉按鈕 -->
+      <!-- 原本的確認／關閉按鈕 -->
       <button
         class="close"
         id="closeModal"

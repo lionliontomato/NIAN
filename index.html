@@ -6,59 +6,190 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#eaf4f9">
   <meta name="description" content="年年の歌單｜搜尋歌名、歌手、分類，隨機抽歌與複製歌曲。">
-  <!-- 注意：GitHub Pages 的實際 HTTP 快取標頭由平台控制；以下 meta 不能取代伺服器端快取設定。 -->
+
+  <!-- GitHub Pages 的實際快取標頭由平台控制 -->
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
+
   <title>年年の歌單</title>
+
+  <!-- 網站圖示 -->
   <link rel="icon" type="image/svg+xml" href="./assets/fish-icon.svg?v=20261030-nian4">
   <link rel="icon" type="image/png" sizes="192x192" href="./assets/favicon-192.png?v=20261030-nian4">
   <link rel="apple-touch-icon" href="./assets/apple-touch-icon.png?v=20261030-nian4">
+
+  <!-- Google 字型 -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./style.css?v=20261030-nian4">
-  <script defer src="./script.js?v=20261030-nian4"></script>
+
+  <!-- 網站樣式：更新版本 -->
+  <link rel="stylesheet" href="./style.css?v=20261101-nian5">
+
+  <!-- 網站功能：更新版本 -->
+  <script defer src="./script.js?v=20261101-nian5"></script>
 </head>
+
 <body class="settings-pending">
+
+  <!-- 背景漂浮音符 -->
   <div class="float-layer" id="floatLayer" aria-hidden="true"></div>
+
   <main class="wrap">
+
+    <!-- 搜尋與篩選區域 -->
     <section class="hero" aria-label="年年歌單搜尋與篩選">
-      <span class="eyebrow"><img src="./assets/fish-icon.svg?v=20261030-nian4" alt="年年の歌單小魚圖示" width="36" height="36"></span>
+
+      <span class="eyebrow">
+        <img
+          src="./assets/fish-icon.svg?v=20261030-nian4"
+          alt="年年の歌單小魚圖示"
+          width="36"
+          height="36"
+        >
+      </span>
+
       <h1 id="siteTitle">年年の歌單</h1>
+
       <p id="siteSubtitle">正在讀取最新標題…</p>
+
+      <!-- 搜尋與隨機抽歌 -->
       <div class="controls">
-        <label class="sr-only" for="search">搜尋歌名、歌手或分類</label>
-        <input class="search" id="search" type="search" autocomplete="off" placeholder="搜尋歌名、歌手或分類…">
-        <button class="random" id="randomBtn" type="button" disabled>🎲 隨機抽歌</button>
+
+        <label class="sr-only" for="search">
+          搜尋歌名、歌手或分類
+        </label>
+
+        <input
+          class="search"
+          id="search"
+          type="search"
+          autocomplete="off"
+          placeholder="搜尋歌名、歌手或分類…"
+        >
+
+        <button
+          class="random"
+          id="randomBtn"
+          type="button"
+          disabled
+        >
+          🎲 隨機抽歌
+        </button>
+
       </div>
-      <div class="tags" id="tags" aria-label="分類篩選"></div>
+
+      <!-- 分類標籤 -->
+      <div
+        class="tags"
+        id="tags"
+        aria-label="分類篩選"
+      ></div>
+
+      <!-- 歌曲數量 -->
       <div class="meta">
-        <span id="count" aria-live="polite">讀取最新歌單中…</span>
+        <span id="count" aria-live="polite">
+          讀取最新歌單中…
+        </span>
       </div>
+
     </section>
-    <section class="grid" id="grid" aria-label="歌曲列表" aria-busy="true"></section>
-    <div class="empty" id="empty" role="status">沒有找到符合條件的歌曲</div>
+
+    <!-- 歌曲卡片列表 -->
+    <section
+      class="grid"
+      id="grid"
+      aria-label="歌曲列表"
+      aria-busy="true"
+    ></section>
+
+    <!-- 找不到歌曲時顯示 -->
+    <div
+      class="empty"
+      id="empty"
+      role="status"
+    >
+      沒有找到符合條件的歌曲
+    </div>
+
   </main>
+
+  <!-- 網站頁尾 -->
   <footer class="site-footer">
-    <p>© 2026 LionLionTomato. All Rights Reserved.</p>
-    <p>本網站「年年の歌單」內容、版面設計與程式架構未經授權不得重製、改作或商業使用。</p>
-    <p><a href="./copyright.html">著作權聲明與使用條款</a></p>
+
+    <p>
+      © 2026 LionLionTomato. All Rights Reserved.
+    </p>
+
+    <p>
+      本網站「年年の歌單」內容、版面設計與程式架構未經授權不得重製、改作或商業使用。
+    </p>
+
+    <p>
+      <a href="./copyright.html">
+        著作權聲明與使用條款
+      </a>
+    </p>
+
   </footer>
-  <div class="modal" id="modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+
+  <!-- 隨機抽歌彈出視窗 -->
+  <div
+    class="modal"
+    id="modal"
+    aria-hidden="true"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="modalTitle"
+  >
+
     <div class="modal-card">
-      <img class="modal-fish" src="./assets/fish-icon.svg?v=20261030-nian4" alt="" width="56" height="56">
-      <h2 id="modalTitle">🐟年年推薦</h2>
-      <div class="big" id="pickSong"></div>
+
+      <!-- 小魚圖示 -->
+      <img
+        class="modal-fish"
+        src="./assets/fish-icon.svg?v=20261030-nian4"
+        alt=""
+        width="56"
+        height="56"
+      >
+
+      <!-- 抽歌視窗標題 -->
+      <h2 id="modalTitle">
+        🐟年年推薦
+      </h2>
+
+      <!-- 抽中的歌曲名稱 -->
+      <div
+        class="big"
+        id="pickSong"
+      ></div>
+
+      <!-- 抽中的歌手與分類 -->
       <div id="pickArtist"></div>
 
-      <!-- 隨機抽歌結果複製按鈕 -->
-      <button id="copyPickBtn" type="button">
+      <!-- 新增：複製抽中的歌曲名稱與歌手 -->
+      <button
+        id="copyPickBtn"
+        type="button"
+        aria-label="複製抽中的歌曲名稱與歌手"
+      >
         📋 複製歌曲名稱與歌手
       </button>
 
-      <button class="close" id="closeModal" type="button">就這個了!</button>
+      <!-- 原本的關閉按鈕 -->
+      <button
+        class="close"
+        id="closeModal"
+        type="button"
+      >
+        就這個了!
+      </button>
+
     </div>
+
   </div>
+
 </body>
 </html>
